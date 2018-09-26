@@ -11,7 +11,7 @@ If the number is not divisible by 3 or 5, print the number
 
 var x = 1;
 
-while (x <= 20) {
+while (x <= 10) {
     
     if (x % 5 === 0 && x % 3 === 0) {
         console.log("JuliaJames");
