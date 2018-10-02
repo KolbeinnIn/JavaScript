@@ -16,15 +16,9 @@ document.addEventListener("keyup", function (e) {//ef það er sleppt takkanum
 	var W = canvas.width = window.innerWidth;
 	var H = canvas.height = window.innerHeight;
 	
-	// Velocity x
 	var vx = 0;
     var vy = -20;
-	// Velocity y
-	//var vy = (Math.random() * -15) - 5;
-	//var vy = -20;
-    if (32 in keysDown){
-        var vy = -15;
-    }
+	
 	var gravity = 0.5;
 	// Bounce Factor is the force with which
 	// the ball should rebound. 1 means 100%

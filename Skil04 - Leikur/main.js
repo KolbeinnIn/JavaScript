@@ -13,7 +13,7 @@ var ctx = canvas.getContext('2d');
 var width = canvas.width = window.innerWidth;
 var height = canvas.height = window.innerHeight;
 
-
+/*
 var paddleHeight = 10;
 var paddleWidth = 75;
 var paddleX = (canvas.width-paddleWidth)/2;
@@ -31,19 +31,19 @@ function mouseMoveHandler(e) {
     h3.textContent = relativeX + " " + relativeY;     
 }
 
-
-var gravity = 0.5
-
-
+*/
+var gravity = 0.2
 
 
-function drawPaddle() {
+
+
+/*function drawPaddle() {
     ctx.beginPath();
     ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
-}
+}*/
 
 function random(min,max) {
   var num = Math.floor(Math.random()*(max-min)) + min;
@@ -212,27 +212,27 @@ EvilCircle.prototype.draw = function() {
 // define EvilCircle checkBounds method
 
 EvilCircle.prototype.checkBounds = function() {
-  if((this.x + this.size) >= width) {
-    this.x -= this.size;
-  }
+    if((this.x + this.size) >= width) {
+        this.x -= this.size;
+    }
+    
+    if((this.x - this.size) <= 0) {
+        this.x += this.size;
+    }
+    if (
+        this.x + 4 > canvas.width ||
+        this.x - 4 < 0 ||
+        this.y + 4 > canvas.height
+     ){
 
-  if((this.x - this.size) <= 0) {
-    this.x += this.size;
-  }
-
-  if((this.y + this.size) >= height) {
-    this.y -= this.size;
-  }
-
-
-  if((this.y - this.size) <= 0) {
-    this.y += this.size;
-  }
-    this.y += 0.1;
+        this.y = canvas.height - 12;
+        
+    }
+  
 };
 
 let mario = new EvilCircle(500,500, true);
-mario.speed = 2;
+mario.speed = 3;
 
 EvilCircle.prototype.draw = function() {
   ctx.beginPath();
@@ -242,16 +242,14 @@ EvilCircle.prototype.draw = function() {
   ctx.stroke();
 };
 
-// define EvilCircle setControls method
+
 var balls = [];
-let effect = 2;
 EvilCircle.prototype.setControls = function() {
-    
-    /*if (38 in keysDown || 87 in keysDown) {
-      mario.y -= mario.speed;//ef ýtt er upp
-    }*/
-    if (32 in keysDown){
-        mario.y -= 2;//effect;
+    if (mario.y === canvas.height - 12){
+        if (32 in keysDown || 87 in keysDown){
+            mario.y -= mario.speed;//ef ýtt er upp
+            vy = -(canvas.height / 75);
+        }
     }
     if (40 in keysDown || 83 in keysDown) {
       mario.y += mario.speed;//ef ýtt er niður
@@ -262,16 +260,9 @@ EvilCircle.prototype.setControls = function() {
     if (39 in keysDown || 68 in keysDown) {
       mario.x += mario.speed;//ef ýtt er til hægri
     }
-    /*if (effect > -5){
-        effect += 0.5
-    }
-    else if (effect < -0.5){
-        effect = 0;
-    }
-        console.log(effect + "asd")*/
 };
 
-// define EvilCircle collision detection
+
 
 EvilCircle.prototype.collisionDetect = function() {
   for(var j = 0; j < balls.length; j++) {
@@ -294,42 +285,25 @@ EvilCircle.prototype.collisionDetect = function() {
 //var evil = new EvilCircle(random(0,width), random(0,height), true);
 var platArray = [];
 function platforms(){
-    var plat = new Platform(width-200,random(0,height),-5,0,true,100);
+    var plat = new Platform(width-200,random(700,height),-5,0,true,100);
     platArray.push(plat);
 }
 
-/*function Update(){
-    var size = random(10,20); //size neðst í lykkju
-    var ball = new Ball(    
-    // ball position always drawn at least one ball width
-    // away from the adge of the canvas, to avoid drawing errors
-    random(0 + size,width - size), // x
-    random(0 + size,height - size), // y
-    random(2,2), // velX 
-    random(-2,-2), // velY
-    true,         // exists
-    'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', //color
-    size //size (efst í lykkju)
-    );
-    balls.push(ball);
-    count++;
-    para.textContent = 'Ball count: ' + count;
-
- }*/
+vy = 0;
 
 function loop() {
-    /*if(32 in keysDown){
+    /*if(32 in keysDown){ //til að skjota
         var ball = new Ball(paddleX+38, paddleY-5, 2, 0, true,
                             'rgb(' + random(0,255) + ',' + random(0,255) + ',' + random(0,255) +')', 15);
         balls.push(ball);
         count++;
         para.textContent = 'Ball count: ' + count;
     }*/
+    
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.fillRect(0,0,width,height);
     
     mario.setControls();
-    
     
     
     
@@ -340,21 +314,37 @@ function loop() {
       balls[i].collisionDetect();
     }
   }
-    for(var i = 0; i < platArray.length; i++) {
-    if(platArray[i].exists) {
-        platArray[i].draw();
-        platArray[i].Update()
+    
+    
+    mario.y += vy;
+    vy += gravity;
         
-    }
-  }
-    mario.draw();
+    
+    for(var i = 0; i < platArray.length; i++) {
+        if(platArray[i].exists) {
+            platArray[i].draw();
+            platArray[i].Update()
+            if (mario.y <= platArray[i].y - 12 &&
+                mario.x > platArray[i].x &&
+                mario.x < platArray[i].x + 300
+               )
+            {
+                mario.y = platArray[i].y - 12;
+              
+            }
+            else{
+                
+            }
+
+        }
+      }
+    
+    
+    
     mario.checkBounds();
+    mario.draw();
     mario.collisionDetect();
-    drawPaddle();
-    //requestAnimationFrame(loop);
+    //drawPaddle();
 }
-
-//loop();
-
-setInterval(platforms,5000)
+setInterval(platforms,2000)
 setInterval(loop,5)
