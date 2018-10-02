@@ -249,7 +249,7 @@ EvilCircle.prototype.setControls = function() {
         if (32 in keysDown || 87 in keysDown){
             mario.y -= mario.speed;//ef ýtt er upp
             vy = -(canvas.height / 75);
-        }
+            }
     }
     if (40 in keysDown || 83 in keysDown) {
       mario.y += mario.speed;//ef ýtt er niður
@@ -291,6 +291,11 @@ function platforms(){
 
 vy = 0;
 
+function gravity(){
+   
+}
+
+var g = false;
 function loop() {
     /*if(32 in keysDown){ //til að skjota
         var ball = new Ball(paddleX+38, paddleY-5, 2, 0, true,
@@ -316,30 +321,32 @@ function loop() {
   }
     
     
-    mario.y += vy;
-    vy += gravity;
-        
+    
+    
     
     for(var i = 0; i < platArray.length; i++) {
         if(platArray[i].exists) {
             platArray[i].draw();
             platArray[i].Update()
             if (mario.y <= platArray[i].y - 12 &&
+                mario.y >= platArray[i].y - 24 &&
                 mario.x > platArray[i].x &&
                 mario.x < platArray[i].x + 300
                )
             {
-                mario.y = platArray[i].y - 12;
-              
+                g = true;
+                vy = 0
+                mario.y = platArray[i].y-14;
             }
-            else{
-                
+        else if(!(mario.x > platArray[i].x &&
+                mario.x < platArray[i].x + 300)){
+                g = false;
             }
-
         }
       }
     
-    
+    mario.y += vy;
+    vy += gravity;
     
     mario.checkBounds();
     mario.draw();
