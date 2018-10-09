@@ -22,18 +22,54 @@ h1 {
   color: white;
 }
 
-p {
+#stig {
   position: absolute;
   margin: 0;
-  top: 35px;
+  top: 65px;
   left: 5px;
   color: white;
 }
 
-h3 {
+#lif{
     position: absolute;
     margin: 0;
-    top: 55px;
+    top: 35px;
     left: 5px;
+    color: white;
+}
+#titill{
+    position: absolute;
+    margin: 0;
+    top: 0px;
+    left: 5px;
+    color: white;
+}
+#controls{
+    position: absolute;
+    margin: 0;
+    top: 20px;
+    right: 5px;
+    color: white;
+}
+#controls2{
+    position: absolute;
+    margin: 0;
+    top: 40px;
+    right: 5px;
+    color: white;
+}
+
+#controls3{
+    position: absolute;
+    margin: 0;
+    top: 60px;
+    right: 5px;
+    color: white;
+}
+h3{
+    position: absolute;
+    margin: 0;
+    top: 0px;
+    right: 70px;
     color: white;
 }
