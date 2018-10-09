@@ -69,7 +69,7 @@ Platform.prototype.draw = function(){ //platform prototype til að birta platfor
 }
 
 
-
+//hér eru constructors fyrir skotin/ball og Enemy
 function Ball(x, y, velX, velY, exists, color, size) {
   Shape.call(this, x, y, velX, velY, exists);
 
@@ -87,8 +87,7 @@ function Enemy(x, y, velX, velY, exists, color, size) {
 Ball.prototype = Object.create(Shape.prototype);
 Ball.prototype.constructor = Ball;
 
-// define ball draw method
-
+//prototype function til að birta skotin
 Ball.prototype.draw = function() {
   ctx.beginPath();
   ctx.fillStyle = this.color;
@@ -98,7 +97,7 @@ Ball.prototype.draw = function() {
 
 
 
-Ball.prototype.upDate = function() {
+Ball.prototype.upDate = function() { //collision detection á veggjum skjásins.
     if((this.x + this.size) >= width) {
         this.velX = -(this.velX);
         this.exists = false;
@@ -124,6 +123,7 @@ Ball.prototype.upDate = function() {
 };
 Enemy.prototype.__proto__ = Ball.prototype;
 Enemy.prototype.constructor = Enemy;
+//prototype function til að teikna enemy (teiknar það þrisvar vegna þess að þannig lítur það út eins og enemy en ekki bara einhver hringur)
 Enemy.prototype.draw2 = function(fjoldi){
     ctx.beginPath();
     ctx.fillStyle = this.color;
@@ -137,20 +137,20 @@ Enemy.prototype.draw2 = function(fjoldi){
     
 }
 
-Enemy.prototype.update = function(){
+Enemy.prototype.update = function(){ //prototype function til að fá enemies á sama hraða og platformin.
     this.x += this.velX;
     this.y += this.velY;
 }
 
 Platform.prototype.Update = function() {
-    
+//function sem fær platformin til að hreyfast og eyðir þeim síðan þegar þau eru komin út af skjánum.    
   if(this.x < -350) {
     this.exists = false;
   }
   this.x += this.velX;
 };
 
-// define ball collision detection
+//skota collision detection á enemies. 3 boltar (enemy) hagar sér eins og einn ferhyrningur í collision.
 Ball.prototype.collisionDetect = function() {
   for(let j = 0; j < enemies.length; j++) {
     if(enemies[j].exists) {
@@ -168,22 +168,21 @@ Ball.prototype.collisionDetect = function() {
 };
 
 
-// define EvilCircle constructor, inheriting from Shape
 //playerinn
-function EvilCircle(x, y, exists) {
+function Player(x, y, exists) {
   Shape.call(this, x, y, 20, 20, exists);
 
   this.color = 'blue';
   this.size = 10;
 }
 
-EvilCircle.prototype = Object.create(Shape.prototype);
-EvilCircle.prototype.constructor = EvilCircle;
+Player.prototype = Object.create(Shape.prototype);
+Player.prototype.constructor = Player;
 
 
-// define EvilCircle draw method
+// define player draw method
 
-EvilCircle.prototype.draw = function() {
+Player.prototype.draw = function() {
   ctx.beginPath();
   ctx.strokeStyle = this.color;
   ctx.lineWidth = 3;
@@ -192,9 +191,9 @@ EvilCircle.prototype.draw = function() {
 };
 
 
-// define EvilCircle checkBounds method
+// define player checkBounds method
 
-EvilCircle.prototype.checkBounds = function() {
+Player.prototype.checkBounds = function() {
     if((this.x + this.size) >= width) {
         this.x -= this.size;
     }
@@ -214,10 +213,10 @@ EvilCircle.prototype.checkBounds = function() {
   
 };
 
-let mario = new EvilCircle(500,500, true);
-mario.speed = 4;
+let player1 = new Player(500,500, true);
+player1.speed = 4;
 
-EvilCircle.prototype.draw = function() {
+Player.prototype.draw = function() {
   ctx.beginPath();
   ctx.strokeStyle = this.color;
   ctx.lineWidth = 3;
@@ -227,28 +226,28 @@ EvilCircle.prototype.draw = function() {
 
 
 var balls = [];
-var canJump = 0;
-EvilCircle.prototype.setControls = function() {
+var canJump = 0; //nota 0 og 1 í kóðanum en true í if setningunni hér fyrir neðan vegna þess að það er styttra að skrifa 0/1 í stað true/false ATH! líka == en ekki === annars myndi það ekki virka.
+Player.prototype.setControls = function() {
     if (canJump == true){
         if (32 in keysDown || 87 in keysDown){
-            mario.y -= mario.speed;//ef ýtt er upp
-            vy = -(canvas.height / 75);
+            player1.y -= player1.speed;//ef ýtt er upp
+            vy = -(canvas.height / 75); //hluti af gravity, hæðin / 75 er bara upp á mismunandi skjástærðir hjá fólki.
             }
     }
     if (40 in keysDown || 83 in keysDown) {
-      mario.y += mario.speed;//ef ýtt er niður
+      player1.y += player1.speed;//ef ýtt er niður
     }
     if (37 in keysDown || 65 in keysDown) {
-      mario.x -= mario.speed;//eft ýtt er til vinstri
+      player1.x -= player1.speed;//eft ýtt er til vinstri
     }
     if (39 in keysDown || 68 in keysDown) {
-      mario.x += mario.speed;//ef ýtt er til hægri
+      player1.x += player1.speed;//ef ýtt er til hægri
         
     }
 };
 
 var lif = 3;
-EvilCircle.prototype.collisionDetect = function() {
+Player.prototype.collisionDetect = function() { //collision á player og enemy, player missir líf og fær ekki stig.
   for(let j = 0; j < enemies.length; j++) {
     if(enemies[j].exists) {
         if (this.y <= enemies[j].y+60 &&
@@ -265,11 +264,11 @@ EvilCircle.prototype.collisionDetect = function() {
 
 // define loop that keeps drawing the scene constantly
 
-//var evil = new EvilCircle(random(0,width), random(0,height), true);
+//var evil = new player(random(0,width), random(0,height), true);
 var platArray = [];
 var enemies = [];
-function platforms(){
-    let haed = random(700,height-50)
+function platforms(){ //function til að búa til platforms og enemies út frá Platform og Enemy constructors
+    let haed = random(400,height-50) //random hæð á bilinu 400 og hæð skjásins-50px ATH! stundum þarf að fara á annað platform til að komast upp á hitt, þannig á það að vera.
     var plat = new Platform(width,haed,0,0,true,100);
     var enemy = new Enemy(width+300, haed-40, 0,0,true,'rgb(255,255,0)',0);
     enemies.push(enemy);
@@ -287,84 +286,85 @@ function fjBolta(){ //function til að telja hversu mörg skot eru í loftinu
 var vy = 0;
 function loop() {
     console.log(stig);
-    if (lif >= 0 && stig < 20){
+    if (lif >= 0 && stig < 20){ //ef lífin eru búin taparyu eða þú ert komin með 20 stig, þá vinnuru
         let fjBolta1 = fjBolta();
-        if(75 in keysDown && fjBolta1 < 1){ //ekki hægt að skjóta nema einni skoti í einu.
-            var ball = new Ball(mario.x+38, mario.y-5, 5,0,true,
+        if(75 in keysDown && fjBolta1 < 1){ //ekki hægt að skjóta nema einu skoti í einu.
+            var ball = new Ball(player1.x+38, player1.y-5, 5,0,true,
                                 'rgb('+random(0,255)+','+random(0,255)+','+random(0,255)+')',15);
             balls.push(ball);
 
         }
 
-        ctx.fillStyle = "rgba(120,120,120,0.5)";
+        ctx.fillStyle = "rgba(120,120,120,0.5)"; //grái bakrunnsliturinn, 0.5 í alpha til að gera þetta meira smooth og flott.
         ctx.fillRect(0,0,width,height);
-        mario.setControls();
+        player1.setControls();
 
 
-      for (var i = 0; i < balls.length; i++) {
+      for (var i = 0; i < balls.length; i++) { //spawna skotin
         if(balls[i].exists) {
           balls[i].draw();
           balls[i].upDate();
           balls[i].collisionDetect();
         }
       }
-        for (let i = 2; i < enemies.length; i++){
+        for (let i = 2; i < enemies.length; i++){ //spawna enemis
             if (enemies[i].exists){
                 enemies[i].draw2(3);
                 enemies[i].update();
             }
         }
-
-        if (mario.y === canvas.height-12){
+        //áður en platforms spawna þá getur player hoppað, fyrir utan það þá er þetta useless kóði
+        if (player1.y === canvas.height-12){ 
             canJump = 1;
         }
         else{
             canJump = 0;
         }
+        //hér spawnast platformin og collision detection á player og platform
         for(var i = 2; i < platArray.length; i++) {
             if(platArray[i].exists) {
                 platArray[i].Update();
 
-                if (platArray.length > 2){ 
+                if (platArray.length > 2){ //þetta er svo hægt sé að checka á current platform og previous platform án þess að fá errors í byrjun (þess vegna er i = 2 í for lykkjunni líka)
                     platArray[i].draw();
 
-                    if ((mario.y >= platArray[i].y - 23 &&  //ef mario er ofaná platformi
-                        mario.y <= platArray[i].y - 12&&
-                        mario.x > platArray[i].x-5 &&
-                        mario.x < platArray[i].x + 350) ||
-
-                        //basically ef það er u tvö platforms á skjánum á sama tíma
-                        (mario.y >= platArray[i-1].y - 23 && 
-                        mario.y <= platArray[i-1].y - 12 &&
-                        mario.x > platArray[i-1].x-5 &&
-                        mario.x < platArray[i-1].x + 350)
+                    if ((player1.y >= platArray[i].y - 23 &&  //ef player er ofaná platformi
+                        player1.y <= platArray[i].y - 12&&
+                        player1.x > platArray[i].x-5 &&
+                        player1.x < platArray[i].x + 350) ||
+                        //basically ef það er u tvö platforms á skjánum á sama tíma (sem eru alltaf)
+                        (player1.y >= platArray[i-1].y - 23 && 
+                        player1.y <= platArray[i-1].y - 12 &&
+                        player1.x > platArray[i-1].x-5 &&
+                        player1.x < platArray[i-1].x + 350)
                        )
                     {
-                        canJump = 1;
+                        canJump = 1; //player getur hoppað
                         vy = 0
                     }
                     else{
-                        if (mario.y === canvas.height-12){
-                            canJump = 1;
+                        if (player1.y === canvas.height-12){
+                            canJump = 1; //player getur hoppað
                         }
                         else{
-                            canJump = 0;
+                            canJump = 0; //player getur ekki hoppað
                         }
                     }
                 }
             }
 
           }
-        mario.y += vy;
+        player1.y += vy; //meira um artifical þyngdaraflið, þarf ekki útskýringu
         vy += gravity;
 
-        mario.checkBounds();
-        mario.draw();
-        mario.collisionDetect();
+        player1.checkBounds(); //boundaries fyrir player
+        player1.draw(); //player birtist
+        player1.collisionDetect(); //collision fyrir player
+        //líf og stig uppfærast
         lifstatus.textContent = "Líf: " + lif;
         stigstatus.textContent = "Stig: " + stig;
     }
-    else if (lif < 0){
+    else if (lif < 0){ //GAME OVER skjárinn
         titill.textContent = "";
         lifstatus.textContent = "";
         stigstatus.textContent = "";
@@ -372,16 +372,20 @@ function loop() {
         ctx.fillStyle = "black";
         ctx.fillRect(0,0,width,height)
         ctx.fillStyle = "white";
-        ctx.fillText("Þú tapaðir.",(width/2.4),height/2.1);
+        ctx.fillText("ÞÚ TAPAÐIR.",(width/2.4),height/2.1);
         ctx.fillText(`Stig: ${stig}`,(width/2.3),height/1.8);
         ctx.font = "25px Arial";
         ctx.fillText("Ýttu á spacebar til að reyna aftur.",(width/2.65),height/1.6);
         if (32 in keysDown){
+            //allt resettast
             lif = 3;
             stig = 0;
+            platArray = [];
+            enemies = [];
+            balls = [];
         }
     }
-    else if (stig >= 20){
+    else if (stig >= 20){ //ÞÚ VANNST skjárinn
         titill.textContent = "";
         lifstatus.textContent = "";
         stigstatus.textContent = "";
@@ -389,11 +393,12 @@ function loop() {
         ctx.fillStyle = "black";
         ctx.fillRect(0,0,width,height)
         ctx.fillStyle = "white";
-        ctx.fillText("Þú vannst.",(width/2.4),height/2.1);
+        ctx.fillText("ÞÚ VANNST.",(width/2.4),height/2.1);
         ctx.fillText(`Stig: ${stig}`,(width/2.3),height/1.8);
         ctx.font = "25px Arial";
         ctx.fillText("Ýttu á spacebar til að spila aftur.",(width/2.65),height/1.6);
         if (32 in keysDown){
+            //allt resettast
             lif = 3;
             stig = 0;
             platArray = [];
@@ -402,5 +407,5 @@ function loop() {
         }
     }
 }
-setInterval(platforms,2400)
-setInterval(loop,5)
+setInterval(platforms,2400) //platformin spawna á 2,4 sek fresti
+setInterval(loop,5) //main lykkjan uppfærist á 0,005 sek fresti
