@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <style>
+    span{
+      font-size:5em;
+    }
+    #hour{
+      color:red;
+    }
+    #min{
+      color:blue;
+    }
+    #sec{
+      color:green;
+    }
+    
+  </style>
+</head>
+<body>
+  <script>
+    let div = document.createElement('div');
+    div.innerHTML = '<div id="clock"><span id="hour"></span><span id="min"></span><span id="sec"></span></div>';
+    document.body.append(div);
+      function update() {
+        let clock = document.getElementById('clock');
+        let date = new Date(); // (*)
+        let hours = date.getHours();
+        if (hours < 10) hours = '0' + hours + ":";
+        clock.children[0].innerHTML = hours + ":";
+
+        let minutes = date.getMinutes();
+        if (minutes < 10) minutes = '0' + minutes + ":";
+        clock.children[1].innerHTML = minutes + ":";
+
+        let seconds = date.getSeconds();
+        if (seconds < 10) seconds = '0' + seconds;
+        clock.children[2].innerHTML = seconds;
+      }
+  
+    function clockStart() {
+      timer = setInterval(update, 1000);
+      update(); // <--  start right now, don't wait 1 second till the first setInterval works
+    }
+
+    function clockStop() {
+      clearInterval(timer);
+    }
+      
+    clockStart();
+  </script>
+    
+  <input type="button" onclick="clockStart()" value="Start">
+  <input type="button" onclick="clockStop()" value="Stop">
+</body>
+</html>
