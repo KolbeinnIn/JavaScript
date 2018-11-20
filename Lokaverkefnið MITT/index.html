@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Concerts</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="script.js" type="text/javascript"></script>
+        <script src="semantic.min.js"></script>
+        <link rel="stylesheet" href="semantic.min.css"/>
+    </head>
+    <body style="max-width: 60em; margin: 0 auto;">
+        <div class="ui segment">
+            <div class="ui two column very relaxed stackable grid">
+                <div class="ui input column">
+                    <h4>Leita af sýningu</h4>
+                    <input type="text" id="search" onkeyup="leita()" value=""/>
+                </div>
+                <div class="ui input column">
+                    <h4>Veldu staðsetningu</h4>
+                    <input type="text" id="stadur" onkeyup="stadsetning()">
+                </div>
+            </div>
+        </div>
+        <div class="ui segment" id="syningar"></div>
+    </body>
+</html>
