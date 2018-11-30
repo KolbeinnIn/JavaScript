@@ -59,18 +59,29 @@ $.ajax({
     }
   }
 });
-//document.getElementById("syningar").innerHTML +='<div id="'+key+'" class="syning " alt="'+hlutur.stadur+'"><img src='+hlutur.mynd+' />'+'<h2>'+key+'</h2><h3>'+hlutur.stadur+'</h3><h4>'+dagsetningin+'</h4><h6>'+timi[1]+'</h6></div>';
+
+function containsObject(obj, array) {
+    for (i = 0; i < array.length; i++) {
+        if (array[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 function leita(){
     //let divtag = document.getElementsById("syningar");
     
     let divtag = document.getElementById("syningar");
     let list = divtag.getElementsByTagName("div");
-    let syningarnar;
     let text = document.getElementById("search");
     let filter = text.value.toLowerCase();
-    for (i = 0; i < list.length; i++){
-        if (i % 3 != 0){
+    let asd = list[0].getElementsByTagName("div");
+    let temp = [];
+    for (i = 0; i < list.length; i++){ //fer í gegnum lista sem geymir ÖLL div tög innan <div class="ui segment" id=syningar>
+        asd = list[i].getElementsByTagName("div");
+        if (i % 3 != 0){ //þriðja hvert div tag er ui horizontal segment sem fer utan um tvo viðburði
             if (list[i].id.toLowerCase().indexOf(filter)){
                 list[i].style.display = "none";
             }
@@ -78,35 +89,70 @@ function leita(){
                 list[i].style.display = "";
             }
         }
+        else{ //allt í þessu else er til að fjarlægja litlu línurnar sem koma þegar horizontal segment er tómt (borderinn)
+            let teljari = 0;
+            for (j = 0; j < asd.length; j++){
+                if (filter != ""){ //þessi if setning er til að koma í veg fyrir skrýtið bug þegar strokað er út úr leitar kassanum en allir viðburðirnir koma ekki aftur
+                    if (teljari <= 2){
+                        if (asd[j].style.display == "none"){
+                            teljari += 1;
+                        }
+                    }
+                    if (teljari >= 2){
+                        list[i].style.display = "none"
+                    }
+                    else{
+                        list[i].style.display = "";
+                    }
+                }
+                else{
+                    list[i].style.display = "";
+                }
+            }
+            
+        }
     }
-    //let syningarnar = horiz.getElementsByTagName('div');
-    
-    //console.log(divtag);
-    //console.log(syningarnar);
-    
-    for (let i = 0; i< syningarnar.length; i++){
-        if (syningarnar[i].id.toLowerCase().indexOf(filter)){
-            console.log(syningarnar[i]);
-        }
-        else {
-            syningarnar[i].style.display = "";
-        }
-
-    };
 }
 
 function stadsetning(){
 	let divtag = document.getElementById("syningar");
-	let syningarnar = divtag.getElementsByTagName('div');
+    let list = divtag.getElementsByTagName("div");
 	let stadur = document.getElementById("stadur");
 	let stadur_value = stadur.value.toLowerCase();
-	for (let i = 0; i< syningarnar.length; i++){
-			h3 = syningarnar[i].getElementsByTagName('h3')[0]
+	let asd = list[0].getElementsByTagName("div");
+    let temp = [];
+    for (i = 0; i < list.length; i++){ //fer í gegnum lista sem geymir ÖLL div tög innan <div class="ui segment" id=syningar>
+        asd = list[i].getElementsByTagName("div");
+        if (i % 3 != 0){ //þriðja hvert div tag er ui horizontal segment sem fer utan um tvo viðburði
+            h3 = list[i].getElementsByTagName('h3')[0]
 			if (h3.innerHTML.toLowerCase().indexOf(stadur_value)){
-				syningarnar[i].style.display = "none";
-			}
-			else {
-				syningarnar[i].style.display = "";
-			}
-		};
+                list[i].style.display = "none";
+            }
+            else{
+                list[i].style.display = "";
+            }
+        }
+        else{ //allt í þessu else er til að fjarlægja litlu línurnar sem koma þegar horizontal segment er tómt (borderinn)
+            let teljari = 0;
+            for (j = 0; j < asd.length; j++){
+                if (stadur_value != ""){ //þessi if setning er til að koma í veg fyrir skrýtið bug þegar strokað er út úr leitar kassanum en allir viðburðirnir koma ekki aftur
+                    if (teljari <= 2){
+                        if (asd[j].style.display == "none"){
+                            teljari += 1;
+                        }
+                    }
+                    if (teljari >= 2){
+                        list[i].style.display = "none"
+                    }
+                    else{
+                        list[i].style.display = "";
+                    }
+                }
+                else{
+                    list[i].style.display = "";
+                }
+            }
+            
+        }
+    }
 }
