@@ -1,6 +1,6 @@
 let tonleikar = {}
 $.ajax({
-  'url': 'http://apis.is/concerts',
+  'url': 'https://apis.is/concerts',
   'type': 'GET',
   'dataType': 'json',
   'success': function(response) {
